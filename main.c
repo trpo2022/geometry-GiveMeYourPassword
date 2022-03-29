@@ -4,9 +4,16 @@
 
 using namespace std;
 
+struct Circle {
+    double x;
+    double y;
+    double R;
+};
+
 string toCorrect(string str);
 int isCircle(string str);
 int checkErrors(string str);
+void getData(string str, Circle *data, int *size);
 
 int main() {
    string filename;
@@ -19,13 +26,22 @@ int main() {
       exit(1);
    }
 
+   int countCircles = 0;
+   Circle data[100];
    string buffer;
    while (getline(in, buffer)) {
       buffer = toCorrect(buffer);
       if (!buffer.empty() && checkErrors(buffer)) {
-          cout << buffer << endl;
+         if (isCircle(buffer)) {
+            getData(buffer, data, &countCircles);
+         }
       }
    }
+
+   for (int i = 0; i < countCircles; i++)
+      cout << "Circle " << i + 1 << ":" <<endl <<
+            "X = " << data[i].x << endl << "Y = " << 
+            data[i].y << endl << "R = " << data[i].R << endl << endl;
 
    in.close();
    return 0;
@@ -86,4 +102,24 @@ int checkErrors(string str) {
       }
 
    return 1;
+}
+
+void getData(string str, Circle *data, int *size) {
+   string digit = "";
+   int k = 0;
+   for (int i = str.find("(") + 1; i <= str.find(")"); i++) {
+      if (isdigit(str[i]) || str[i] == '.' || str[i] == '-')
+         digit += str[i];
+      if (isspace(str[i]) || str[i] == ')') {
+         double convertDigit = atof(digit.c_str());
+         switch (k) {
+            case 0: data[*size].x = convertDigit; break;
+            case 1: data[*size].y = convertDigit; break;
+            case 2: data[*size].R = convertDigit; break; 
+         }
+         k++;
+         digit.clear();
+      }
+   }
+   *size = *size + 1;
 }
