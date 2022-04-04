@@ -1,7 +1,7 @@
-all: main run clean
+all: main 
 
-main: main.c
-	g++ -Wall -w -o main main.c
+main: main.cpp
+	g++ -Wall -w -o main main.cpp
 
 clean:
 	rm main
